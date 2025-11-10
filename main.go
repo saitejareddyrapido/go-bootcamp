@@ -4,48 +4,93 @@ import (
 	"fmt"
 )
 
+// rideRating struct stores rating information for a rider
 type rideRating struct {
-	user    string
-	rating  int
-	comment []string
+	userName string
+	rating   int
+	comment  string
+}
+
+// addRating adds a new rating to the map
+func addRating(ratings map[string]rideRating, userName string, rating int, comment string) {
+	newRating := rideRating{
+		userName: userName,
+		rating:   rating,
+		comment:  comment,
+	}
+	ratings[userName] = newRating
+	fmt.Printf("Rating added for %s!\n", userName)
+}
+
+// getRating retrieves a rating for a specific user
+func getRating(ratings map[string]rideRating, userName string) {
+	if rating, exists := ratings[userName]; exists {
+		fmt.Printf("\nRating for %s:\n", userName)
+		fmt.Printf("  Rating: %d/5\n", rating.rating)
+		fmt.Printf("  Comment: %s\n", rating.comment)
+		displayStars(rating.rating)
+	} else {
+		fmt.Printf("No rating found for %s\n", userName)
+	}
+}
+
+// displayStars prints stars based on the rating
+func displayStars(rating int) {
+	fmt.Print("  Stars: ")
+	for i := 0; i < rating; i++ {
+		fmt.Print("*")
+	}
+	fmt.Println()
+}
+
+// displayAllRatings shows all ratings in the map
+func displayAllRatings(ratings map[string]rideRating) {
+	if len(ratings) == 0 {
+		fmt.Println("No ratings available.")
+		return
+	}
+
+	fmt.Println("\n=== All Rider Ratings ===")
+	for userName, rating := range ratings {
+		fmt.Printf("\nUser: %s\n", userName)
+		fmt.Printf("  Rating: %d/5\n", rating.rating)
+		fmt.Printf("  Comment: %s\n", rating.comment)
+		displayStars(rating.rating)
+	}
+}
+
+// checkRatingExists checks if a rating exists for a user
+func checkRatingExists(ratings map[string]rideRating, userName string) bool {
+	_, exists := ratings[userName]
+	return exists
 }
 
 func main() {
-	// var rideRating1 rideRating
+	// Create a map to store rider ratings
+	// Key: user name (string), Value: rideRating struct
+	ratings := make(map[string]rideRating)
 
-	map1 := make(map[string]rideRating)
-	map1["Jhon"] = rideRating{
-		user:    "Jhon",
-		rating:  5,
-		comment: []string{"good ride!", "good ride2!"},
-	}
-	map1["Jane"] = rideRating{
-		user:    "Jane",
-		rating:  3,
-		comment: []string{"good ride!", "good ride2!"},
-	}
+	// Add some initial ratings
+	addRating(ratings, "John", 5, "Excellent ride! Very smooth and comfortable.")
+	addRating(ratings, "Jane", 4, "Good ride, but could be faster.")
+	addRating(ratings, "Bob", 3, "Average ride experience.")
 
-	if _, ok := map1["Jhon"]; ok {
-		fmt.Println("Jhon is in the map")
+	// Display all ratings
+	displayAllRatings(ratings)
+
+	// Check if a specific user has a rating
+	userToCheck := "John"
+	if checkRatingExists(ratings, userToCheck) {
+		fmt.Printf("\n%s has a rating in the system.\n", userToCheck)
 	} else {
-		fmt.Println("Jhon is not in the map")
+		fmt.Printf("\n%s does not have a rating in the system.\n", userToCheck)
 	}
 
-	for key, _ := range map1 {
-		fmt.Print("the rating is ")
-		for i := 0; i < map1[key].rating; i++ {
-			fmt.Print("*")
-		}
-		fmt.Println()
-	}
+	// Get a specific user's rating
+	fmt.Println("\n--- Getting specific rating ---")
+	getRating(ratings, "Jane")
 
-	// fmt.Println(map1)
-
-	// rideRating1.user = "Jhon"
-	// rideRating1.rating = 5
-	// rideRating1.comment = append(rideRating1.comment, "good ride!")
-	// rideRating1.comment = append(rideRating1.comment, "good ride2!")
-
-	// fmt.Println(rideRating1)
-
+	// Try to get a rating that doesn't exist
+	fmt.Println("\n--- Getting non-existent rating ---")
+	getRating(ratings, "Alice")
 }
