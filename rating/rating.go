@@ -2,31 +2,25 @@ package rating
 
 import "errors"
 
-/*
-Data Structure:
-{
-(productID, []RatingInfo{})
-(productID, []RatingInfo{})
-}
-*/
-
 var products = make(map[string]*RatingInfo)
 
 type Rating struct {
-	RatingID string
-	UserID   string
-	Rating   int
-	Comment  string
+	RatingID string `json:"ratingId"`
+	UserID   string `json:"userId"`
+	Rating   int    `json:"rating"`
+	Comment  string `json:"comment"`
 }
 
 type RatingInfo struct {
-	Rating []Rating
+	Rating        []Rating
+	AverageRating float64
 }
 
 func AddProduct(productID string) {
 	if _, exists := products[productID]; !exists {
 		products[productID] = &RatingInfo{
-			Rating: []Rating{},
+			Rating:        []Rating{},
+			AverageRating: 0,
 		}
 	}
 }
@@ -43,13 +37,22 @@ func AddRating(productID string, ratingID string, userID string, rating int, com
 			Comment:  comment,
 		}
 		product.Rating = append(product.Rating, newRating)
+		product.AverageRating = (product.AverageRating*float64(len(product.Rating)-1) + float64(rating)) / float64(len(product.Rating))
 	}
 	return nil
 }
 
-func GetProductRatingInfo(productID string) []Rating {
+func GetProductRatingInfo(productID string) ([]Rating, float64) {
 	if product, exists := products[productID]; exists {
-		return product.Rating
+		return product.Rating, product.AverageRating
 	}
-	return nil
+	return nil, 0.0
+}
+
+func GetAllProducts() map[string][]Rating {
+	result := make(map[string][]Rating)
+	for productID, ratingInfo := range products {
+		result[productID] = ratingInfo.Rating
+	}
+	return result
 }

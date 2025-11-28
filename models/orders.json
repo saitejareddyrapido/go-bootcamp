@@ -1,0 +1,13 @@
+{
+    "id" : "5e736e5f7222813cb06bd109",
+     "items": [
+       {
+         "productId": "5e736e5f7222813cb06bd203",
+         "quantity": 2
+       }
+     ],
+     "total": 60.00,
+     "status": "pending",
+     "createdAt": "2025-01-10T12:00:00Z",
+     "updatedAt": "2025-01-10T12:00:00Z"
+   }

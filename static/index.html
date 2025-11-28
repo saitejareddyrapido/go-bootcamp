@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Ratings - Simple Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #result {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .product {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .product-id {
+            font-weight: bold;
+            color: #2196F3;
+            font-size: 18px;
+        }
+        .rating {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-left: 3px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Product Ratings API Test</h1>
+    <p>Click the button below to call the API and see the data:</p>
+    
+    <button onclick="fetchProducts()">Get All Products</button>
+    
+    <div id="result"></div>
+
+    <script>
+        // This function is called when you click the button
+        async function fetchProducts() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Loading...';
+            
+            try {
+                // Step 1: Make a request to our API endpoint
+                // fetch() is a browser function that makes HTTP requests
+                const response = await fetch('/api/products');
+                
+                // Step 2: Check if the request was successful
+                if (!response.ok) {
+                    throw new Error('Failed to fetch: ' + response.status);
+                }
+                
+                // Step 3: Convert the JSON response to a JavaScript object
+                const data = await response.json();
+                
+                // Step 4: Display the data on the page
+                displayProducts(data);
+                
+            } catch (error) {
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        // This function formats and displays the products nicely
+        function displayProducts(data) {
+            const resultDiv = document.getElementById('result');
+            
+            if (!data.products || data.products.length === 0) {
+                resultDiv.textContent = 'No products found';
+                return;
+            }
+            
+            let html = '<h2>Products (' + data.products.length + '):</h2>';
+            
+            // Loop through each product
+            data.products.forEach(product => {
+                html += '<div class="product">';
+                html += '<div class="product-id">Product: ' + product.productId + '</div>';
+                html += '<p>Ratings: ' + product.ratings.length + '</p>';
+                
+                // Loop through each rating for this product
+                if (product.ratings.length > 0) {
+                    product.ratings.forEach(rating => {
+                        html += '<div class="rating">';
+                        html += '<strong>User:</strong> ' + rating.userId + '<br>';
+                        html += '<strong>Rating:</strong> ' + '★'.repeat(rating.rating) + ' (' + rating.rating + '/5)<br>';
+                        html += '<strong>Comment:</strong> ' + rating.comment;
+                        html += '</div>';
+                    });
+                } else {
+                    html += '<p style="color: #999;">No ratings yet</p>';
+                }
+                
+                html += '</div>';
+            });
+            
+            resultDiv.innerHTML = html;
+        }
+        
+        // Automatically load products when page loads
+        window.onload = function() {
+            fetchProducts();
+        };
+    </script>
+</body>
+</html>
