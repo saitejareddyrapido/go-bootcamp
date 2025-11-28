@@ -1,10 +1,12 @@
 {
     "id" : "5e736e5f7222813cb06bd203",
-    "name": "White Cup",
+    "name": "Cup",
     "description": "A white cup",
     "price": 30.00,
     "stock": 100,
     "image": ["/images/sample1.png","/images/sample2.png"],
+    "averageRating": 4.5,
+    "reviews": ["5e736e5f7222813cb06bd102","reviewId2","reviewId3"],
     "createdAt": "2025-01-10T12:00:00Z",
     "updatedAt": "2025-01-10T12:00:00Z"
   }
